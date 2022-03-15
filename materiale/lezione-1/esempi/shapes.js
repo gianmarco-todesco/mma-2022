@@ -79,6 +79,15 @@ function populateScene() {
     meshes.push(mesh);
 
     //------------------------------------------
+    // capsula
+    //------------------------------------------
+    mesh = MB.CreateCapsule('capsule',{
+        radius: 0.25,
+        height: 1.25
+    },scene);
+    meshes.push(mesh);
+
+    //------------------------------------------
     // cubo
     //------------------------------------------
     mesh = MB.CreateBox('cube',{
@@ -293,6 +302,30 @@ function populateScene() {
         }, scene);
     meshes.push(mesh);
 
+
+    //------------------------------------------
+    // Semisfera
+    //------------------------------------------
+    mesh = MB.CreateSphere('sphere',{
+        diameter:1.5,
+        arc:0.5
+    },scene);
+    mesh.material = new BABYLON.StandardMaterial(mesh.name + "_mat", scene);
+    mesh.material.diffuseColor.set(0.8,0.4,0.2);
+    mesh.material.backFaceCulling = false;
+    mesh.material.twoSidedLighting = true;
+
+    // aggiungo un bordo
+    let border = MB.CreateTorus('border', { diameter: 1.5, thickness : 0.07, tessellation:50}, scene);
+    border.material = new BABYLON.StandardMaterial("border_mat", scene);
+    border.material.diffuseColor.set(0.1,0.1,0.1);
+    border.rotation.x = Math.PI/2;
+    border.parent = mesh;
+    mesh.rotation.x = -Math.PI/2;
+    meshes.push(mesh);
+
+
+    /*
     //------------------------------------------
     // CSG: cubo meno sfera
     //------------------------------------------
@@ -310,6 +343,8 @@ function populateScene() {
     mesh = csg1();
     console.log(performance.now() - t0);
     meshes.push(mesh);
+    
+
 
     //------------------------------------------
     // CSG: cilindro meno cilindro meno box
@@ -333,7 +368,7 @@ function populateScene() {
     mesh.rotation.z = Math.PI/2;
     console.log(performance.now() - t0);
     meshes.push(mesh);
-
+    */
 
     //------------------------------------------
     // fine
@@ -343,6 +378,7 @@ function populateScene() {
     // assegno colori diversi alle mesh
     meshes.forEach((mesh,i) => {
         let phi = Math.PI*2*i/meshes.length;
+        if(mesh.material) return;
         let mat = mesh.material = new BABYLON.StandardMaterial(
             mesh.name + "_mat", scene);
         mat.diffuseColor.set(
