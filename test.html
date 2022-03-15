@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test</title>
+        <script src="https://cdn.babylonjs.com/babylon.js"></script>
+        <style>
+            body { padding:20px; }
+            canvas {
+                border: 1px solid black;
+                box-shadow: 10px 10px 30px gray;
+            }
+            .signature {
+              text-align: right;
+              font-size:smaller;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Metodi matematici per l'animazione</h1>
+        <canvas id="c" width="400" height="400"></canvas>
+        <h2>Esempio</h2>
+        <p>
+          Se tutto va bene dovreste vedere un'immagine animata che rappresenta una sfera circondata da due anelli concentrici. 
+          L'anello più interno dovrebbe ruotare attorno ad un asse orizzontale.<br>
+          Fate click & drag con il mouse per ruotare tutto il modello.
+        </p>
+        <p>
+          Nota bene: &egrave; necessaria una connessione ad Internet attiva. Inoltre conviene usare un browser recente (browser raccomandati sono 
+          <a href="https://www.google.com/chrome/">Google Chrome</a> o <a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a>).
+          Se non vedete niente può essere che il vostro browser sia regolato (per motivi di sicurezza) in modo da bloccare l'esecuzione di questo
+          tipo di programmi. Se non riuscite a risolvere fatemelo sapere.
+        </p>
+        <p>
+           Questo &egrave; un esempio molto semplice di quello che faremo durante il laboratorio. Nelle prime lezioni spiegherò il codice in maniera dettagliata, linea per linea. 
+           Anche senza spiegazioni mi aspetto che il codice sia relativamente facile da seguire. Provate ad esempio a fare una modifica e fare in modo che anche il secondo anello 
+           ruoti, magari a velocità diversa!
+        </p>
+        <p>
+          Per vedere e modificare il codice avrete bisogno di un editor di testo. Ad esempio potete usare <a href="https://code.visualstudio.com/">Visual Studio Code</a>, 
+          <a href="https://atom.io/">Atom</a> oppure <a href="https://notepad-plus-plus.org/downloads/">Notepad++</a>. Scaricate ed installate uno di questi programmi (sono gratuiti
+          e multipiattaforma) e aprire il file test.html (questo file). Andate in fondo: li c'è il codice con dei commenti.<br>
+          Fatta una modifica dovrete salvare il file e poi ricaricarlo nel browser (ad es. in Google Chrome basta fare click sulla pagina già aperta e premere il bottone F5).<br>
+          Se avete bisogno di aiuto non esitate a scrivermi un messaggio
+        </p>
+        <p>
+          A presto
+        </p>
+        <p class="signature">
+          Gian Marco Todesco <i>(gianmarco.todesco@gmail.com)</i>
+        </p>
+        <!--  ====================== CODICE ==============================================================  -->
+        <script>
+            // creo le basi della scene. Niente di molto interessante da capire subito: questo codice rimane quasi lo stesso
+            // fra un esempio e l'altro. Non è necessario capire subito i dettagli (questo è un principio che vale anche
+            // per apprendere le lingue straniere)
+            let canvas = document.getElementById('c');
+            canvas.addEventListener('wheel', evt => evt.preventDefault());
+            let engine = new BABYLON.Engine(canvas, true);
+            let scene = new BABYLON.Scene(engine);
+            let camera = new BABYLON.ArcRotateCamera('cam', Math.PI/2,0.7,15, new BABYLON.Vector3(0,0,0), scene);
+            camera.attachControl(canvas,true);
+            camera.wheelPrecision = 50;
+            camera.lowerRadiusLimit = 3;
+            camera.upperRadiusLimit = 13;            
+            let light1 = new BABYLON.PointLight('light1',new BABYLON.Vector3(0,1,0), scene);
+            light1.parent = camera;
+
+            // qui comincia la parte interessante: creo una sfera e due anelli concentrici. Provate a cambiare i parametri : ad es. il diametro dell'anello esterno.
+            let sphere = BABYLON.MeshBuilder.CreateSphere('s', {diameter:2.0}, scene);
+            let torus1 = BABYLON.MeshBuilder.CreateTorus('t', {diameter:4.0, thickness:1, tessellation : 70}, scene);
+            let torus2 = BABYLON.MeshBuilder.CreateTorus('t', {diameter:7.0, thickness:1, tessellation : 70}, scene);
+            // appiattisco gli anelli (applicando un fattore di scala lungo l'asse y; in questo ambiente l'asse y va verso l'alto, in verticale)
+            torus1.scaling.y = 0.5;
+            torus2.scaling.y = 0.5;
+
+            // qui c'è l'animazione. Il codice seguente viene chiamato circa 60 volte al secondo.
+	          engine.runRenderLoop(function() { 
+
+              // calcolo il numero di secondi trascorsi dall'inizio
+              let t = performance.now() * 0.001;
+              // ruoto l'anello interno attorno all'asse x
+              torus1.rotation.x = t;
+              // provate ad aggiungere una riga in modo da far ruotare anche l'anello esterno. 
+              // come si fa a cambiare la velocità di rotazione? Nella riga precedente vediamo che l'angolo di rotazione al tempo t è uguale proprio
+              // a t: l'anello interno ruota alla velocità di un radiante (gli angoli di rotazione sono specificati in radianti e non in gradi) al secondo.
+      
+              // ... qui ci va il vostro codice!! ...
+
+              // qust'ultimo comando disegna il nuovo fotogramma
+              scene.render();
+            });
+        </script>
+    </body>
+</html>

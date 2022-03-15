@@ -1,0 +1,67 @@
+'use strict';
+
+let canvas, engine, scene, camera;
+
+window.addEventListener('DOMContentLoaded', () => {
+    // il tag canvas che visualizza l'animazione
+    canvas = document.getElementById('c');
+    // la rotella del mouse serve per fare zoom e non per scrollare la pagina
+    canvas.addEventListener('wheel', evt => evt.preventDefault());
+    
+    // engine & scene
+    engine = new BABYLON.Engine(canvas, true);
+    scene = new BABYLON.Scene(engine);
+    
+    // camera
+    camera = new BABYLON.ArcRotateCamera('cam', 
+            -Math.PI/2,0.7,
+            15, 
+            new BABYLON.Vector3(0,0,0), 
+            scene);
+    camera.attachControl(canvas,true);
+    camera.wheelPrecision = 50;
+    camera.lowerRadiusLimit = 3;
+    camera.upperRadiusLimit = 13*2;            
+    
+    // luce
+    let light1 = new BABYLON.PointLight('light1',new BABYLON.Vector3(0,1,0), scene);
+    light1.parent = camera;
+    
+    // aggiungo i vari oggetti
+    populateScene(scene);
+    
+    // main loop
+    engine.runRenderLoop(()=>scene.render());
+
+    // resize event
+    window.addEventListener("resize", () => engine.resize());
+});
+
+
+function populateScene() {
+    let torus = BABYLON.MeshBuilder.CreateTorus('torus',{
+        diameter:6,
+        thickness:1,
+        tessellation:70
+
+    },scene);
+    torus.material = new BABYLON.StandardMaterial('mat',scene);
+    torus.material.diffuseColor.set(0.8,0.4,0.1);
+
+    let sphere = BABYLON.MeshBuilder.CreateSphere('sphere',{
+        diameter:4
+    },scene);
+    sphere.material = new BABYLON.StandardMaterial('mat',scene);
+    sphere.material.diffuseColor.set(0.2,0.5,0.7);
+
+    scene.registerBeforeRender(() => {
+        let t = performance.now() * 0.001;
+        let sgn = (Math.floor(t)%2)*2-1;
+        sphere.position.set(
+            3*sgn*(1 - Math.cos(Math.PI*2*t)),
+            3*Math.sin(Math.PI*2*t),
+            0
+        );
+        
+    });
+}
