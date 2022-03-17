@@ -72,6 +72,11 @@
             // appiattisco gli anelli (applicando un fattore di scala lungo l'asse y; in questo ambiente l'asse y va verso l'alto, in verticale)
             torus1.scaling.y = 0.5;
             torus2.scaling.y = 0.5;
+            torus2.material = new BABYLON.StandardMaterial('a', scene);
+            torus2.material.diffuseColor.set(1,0,1)
+
+            torus1.material = new BABYLON.StandardMaterial('a', scene);
+            torus1.material.diffuseColor.set(1,1,0)
 
             // qui c'è l'animazione. Il codice seguente viene chiamato circa 60 volte al secondo.
 	          engine.runRenderLoop(function() { 
@@ -79,7 +84,7 @@
               // calcolo il numero di secondi trascorsi dall'inizio
               let t = performance.now() * 0.001;
               // ruoto l'anello interno attorno all'asse x
-              torus1.rotation.x = t;
+              torus1.rotation.x = t * 5;
               // provate ad aggiungere una riga in modo da far ruotare anche l'anello esterno. 
               // come si fa a cambiare la velocità di rotazione? Nella riga precedente vediamo che l'angolo di rotazione al tempo t è uguale proprio
               // a t: l'anello interno ruota alla velocità di un radiante (gli angoli di rotazione sono specificati in radianti e non in gradi) al secondo.
