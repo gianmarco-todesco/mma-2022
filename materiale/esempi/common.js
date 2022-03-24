@@ -63,3 +63,15 @@ function createGrid(scene) {
         scene);
     return lines;    
 };
+
+
+function smoothStep(t, t0, t1) {
+    if(t<t0) return 0;
+    else if(t>t1) return 1;
+    else return 0.5-0.5*Math.cos(Math.PI*(t-t0)/(t1-t0));
+}
+function step(t, t0, t1) {
+    if(t<t0) return 0;
+    else if(t>t1) return 1;
+    else return (t-t0)/(t1-t0);
+}

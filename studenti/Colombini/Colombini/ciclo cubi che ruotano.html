@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ciclo cubi che ruotano</title>
+        <script src="https://cdn.babylonjs.com/babylon.js"></script>
+        <style>
+            body { padding:20px; }
+            canvas {
+                border: 1px solid black;
+                box-shadow: 5px 5px 5px gray;
+                width: 500px;
+                height: 500px;
+            }
+            .signature {
+              text-align: right;
+              font-size:smaller;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <h1>Esempio semplice</h1>
+        <canvas id="c"></canvas>   
+        <p>Qui ci può andare del testo di spiegazione</p>             
+        <script>
+            // qui comincia il codice JavaScript
+            let canvas = document.getElementById('c');
+            // nel canvas la rotella del mouse serve a cambiare lo zoom,
+            // non deve scrollare la pagina
+            canvas.addEventListener('wheel', evt => evt.preventDefault());
+            // creo engine, scena e camera
+            let engine = new BABYLON.Engine(canvas, true);
+            let scene = new BABYLON.Scene(engine);
+            let camera = new BABYLON.ArcRotateCamera('cam', 
+                -Math.PI/2,
+                2.8,
+                20, 
+                new BABYLON.Vector3(0,0,0), 
+                scene);
+            camera.attachControl(canvas,true);
+            camera.wheelPrecision = 50;
+            camera.lowerRadiusLimit = 30;
+            camera.upperRadiusLimit = 70;    
+            // luce        
+            let light1 = new BABYLON.PointLight('light1',new BABYLON.Vector3(2,2,-5), scene);
+            light1.parent = camera;
+             
+            /*sfera gialla
+            let sphere = BABYLON.MeshBuilder.CreateSphere('s', {
+                diameter:1.2
+            }, scene);
+            sphere.material = new BABYLON.StandardMaterial('smat', scene);
+            sphere.material.diffuseColor.set(0.75,0.4,0.4);
+          
+            // anello blu
+            let torus1 = BABYLON.MeshBuilder.CreateTorus('t', {
+                diameter:2.8, 
+                thickness:0.8, 
+                tessellation : 50
+            }, scene);
+            torus1.material = new BABYLON.StandardMaterial('smat', scene);
+            torus1.material.diffuseColor.set(0,0,1);
+            torus1.scaling.y = 0.5;
+            torus1.rotation.x = Math.PI/2*/
+            let meshes=[]
+            const m = 200;
+            for(let i = 0; i<m; i++) {
+                mesh = BABYLON.MeshBuilder.CreateBox('box', {
+                    width:3, hight:1, depth:3, 
+                },scene);
+                mesh.material = new BABYLON.StandardMaterial('m');
+                mesh.material.diffuseColor.set(0.8,0.4,0.1);
+                let phi =2*Math.PI*i/m;
+                mesh.position.x = 10*Math.cos(phi);
+                mesh.position.z = 10*Math.sin(phi);
+
+
+               mesh.rotation.y= -phi;
+               mesh.rotation.x= -phi;
+               mesh.rotation.z= -phi;  
+
+            }
+            meshes.push(mesh);
+               
+
+	        engine.runRenderLoop(function() { 
+
+              let t = performance.now() * 0.001;
+              // torus1.rotation.x = t;
+              // torus2.rotation.y = t*4;
+              //mesh.position.y = 0.3*Math.cos(2*t*2)
+              scene.render();
+            });
+        </script>
+    </body>
+</html>
